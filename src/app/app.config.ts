@@ -1,9 +1,21 @@
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { ApplicationConfig, importProvidersFrom } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule } from '@angular/forms';
+import { provideRouter, Routes } from '@angular/router';
+import { GoalsSectionComponent } from './components/goals-section/goals-section.component';
+import { ModalComponent } from './components/modal/modal.component';
+import { CalendarComponent } from './components/calendar/calendar.component';
+import { DatePipe } from '@angular/common';
 
-import { routes } from './app.routes';
-import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
+const routes: Routes = [
+  { path: '', component: GoalsSectionComponent }, // Example route
+  // Add other routes as needed
+];
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes), provideClientHydration(withEventReplay())]
+  providers: [
+    importProvidersFrom(BrowserModule, FormsModule),
+    provideRouter(routes),
+    DatePipe
+  ]
 };

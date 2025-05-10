@@ -1,12 +1,14 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+   import { Component } from '@angular/core';
+   import { GoalsSectionComponent } from './components/goals-section/goals-section.component';
 
-@Component({
-  selector: 'app-root',
-  imports: [RouterOutlet],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
-})
-export class AppComponent {
-  title = 'healthApp';
-}
+   @Component({
+     selector: 'app-root',
+     templateUrl: './app.component.html',
+     styleUrls: ['./app.component.scss'],
+     
+     imports: [GoalsSectionComponent], // Import the GoalsSectionComponent
+   })
+   export class AppComponent {
+     title = 'healthApp';
+   }
+   

@@ -1,0 +1,89 @@
+<section class="goals-section">
+  <div class="goals-header">
+    <h2 class="goals-title">My Goals</h2>
+    <button class="add-goal-button">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus mr-2 h-4 w-4"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
+      Add Goal
+    </button>
+  </div>
+
+  <div *ngFor="let goal of goals; trackBy: trackByGoalId" class="goal-item">
+    <div class="goal-content">
+      <button
+        (click)="handleCompleteGoal(goal.id)"
+        [ngClass]="{
+          'goal-status-button': true,
+          'completed': goal.completed
+        }"
+      >
+        <svg *ngIf="goal.completed" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle-2 h-6 w-6"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path><path d="m9 12 2 2 4-4"></path></svg>
+        <div *ngIf="!goal.completed" class="goal-incomplete-indicator"></div>
+      </button>
+      <div class="goal-text">
+        <h3 [ngClass]="{'goal-name': true, 'completed': goal.completed}">
+          {{ goal.name }}
+        </h3>
+        <p class="goal-target-date">
+          Target: {{ formatDate(goal.targetDate) }}
+        </p>
+        <p class="goal-description">
+          {{ goal.description }}
+        </p>
+      </div>
+    </div>
+    <div class="goal-actions">
+      <button (click)="openModal(goal)" class="edit-goal-button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-edit-2 h-4 w-4"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+      </button>
+      <button (click)="handleDeleteGoal(goal.id)" class="delete-goal-button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2 h-4 w-4"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" x2="10" y1="11" y2="17"></line><line x1="14" x2="14" y1="11" y2="17"></line></svg>
+      </button>
+    </div>
+  </div>
+
+  <app-modal [isOpen]="isModalOpen" (close)="closeModal()" [title]="editingGoal ? 'Edit Goal' : 'Add New Goal'">
+    <div class="modal-content">
+      <div class="form-group">
+        <label for="goal-name" class="goal-name-label">
+          Goal Name
+        </label>
+        <input
+          id="goal-name"
+          [(ngModel)]="newGoal.name"
+          class="goal-name-input"
+          placeholder="e.g., Run a marathon"
+        />
+      </div>
+      <div class="form-group">
+        <label for="goal-date" class="goal-date-label">
+          Target Date
+        </label>
+        <div class="date-picker-wrapper">
+          <app-calendar
+            mode="single"
+            (select)="onDateSelect($event)"
+            [selected]="newGoal.targetDate"
+            class="goal-calendar"
+          ></app-calendar>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="goal-description" class="goal-description-label">
+          Description
+        </label>
+        <textarea
+          id="goal-description"
+          [(ngModel)]="newGoal.description"
+          class="goal-description-input"
+          placeholder="Describe your goal in detail..."
+        ></textarea>
+      </div>
+      <div class="modal-actions">
+        <button (click)="handleSaveGoal()" class="save-goal-button">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-save mr-2 h-4 w-4"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+          Save
+        </button>
+      </div>
+    </div>
+  </app-modal>
+</section>
