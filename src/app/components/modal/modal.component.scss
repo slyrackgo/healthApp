@@ -1,0 +1,138 @@
+.min-h-screen {
+  min-height: 100vh;
+}
+/* Background and overall container */
+.bg-gray-950 {
+  background-color: #1a202c; /* Darker, more professional background */
+}
+
+.p-8 {
+  padding: 3rem; /* Slightly increased padding for spaciousness */
+}
+
+.max-w-4xl {
+  max-width: 64rem; /* Increased max-width for larger screens */
+}
+
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.space-y-8 {
+  margin-top: 4rem; /* Increased vertical spacing */
+  margin-bottom: 4rem;
+}
+
+/* Typography */
+.text-4xl {
+  font-size: 3rem; /* Larger heading */
+  line-height: 3.5rem;
+}
+
+.font-bold {
+  font-weight: 600; /* Lighter bold, more modern */
+}
+
+.text-white {
+  color: #f7fafc; /* Off-white, slightly warmer */
+}
+
+.text-center {
+  text-align: center;
+}
+
+/* Navigation Buttons */
+.flex {
+  display: flex;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.gap-4 {
+  column-gap: 2rem; /* Increased horizontal gap */
+}
+
+button {
+  padding: 1rem 2rem; /* Increased button padding */
+  border-radius: 0.5rem; /* More rounded buttons */
+  font-size: 1.1rem; /* Larger font size */
+  line-height: 1.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  transition: all 0.3s ease; /* Smooth transition */
+}
+
+button:hover {
+  background-color: rgba(56, 189, 248, 0.4); /* Lighter hover background */
+  color: #ffffff;
+  transform: translateY(-0.125rem); /* Slight lift on hover */
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+button:active{
+   transform: translateY(0);
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.2);
+}
+
+.text-gray-300 {
+  color: #cbd5e0; /* Light gray */
+}
+
+.hover\:text-white:hover {
+  color: #fff;
+}
+
+.bg-blue-500\/20 {
+  background-color: rgba(56, 189, 248, 0.2); /* Softer blue */
+}
+
+.text-blue-400 {
+  color: #38bdf8; /* Vibrant blue */
+}
+
+.bg-blue-500\/30 {
+  background-color: rgba(56, 189, 248, 0.3);
+}
+
+.text-blue-500\/40 {
+  color: rgba(56, 189, 248, 0.4);
+}
+
+.flex {
+  display: flex;
+}
+
+.mr-2 {
+  margin-right: 0.75rem; /* Increased margin */
+}
+
+.h-4 {
+  height: 1.25rem; /* Increased icon size */
+}
+
+.w-4 {
+  width: 1.25rem;
+}
+
+.list-checks-icon {
+  /* You might need to define these styles, or use an icon library */
+  /* For example, if you were using a library like Font Awesome, */
+  /* you'd include the library and then use classes like:       */
+  /* content: "\f046";  // Font Awesome check-circle-o  */
+  /* font-family: 'FontAwesome';                        */
+}
+
+.bar-chart-icon {}
+
+.text-gray-600 {
+  color: #718096;
+}
+
+.text-green-500 {
+  color: #48bb78;
+}

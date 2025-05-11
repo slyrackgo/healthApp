@@ -1,169 +1,144 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef, Inject, Output, EventEmitter, Input } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject, LOCALE_ID, ViewChild, ElementRef } from '@angular/core';
 import { Goal } from '../../types';
-import { Subject, takeUntil } from 'rxjs';
-import { DatePipe, CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ModalComponent } from '../modal/modal.component';
+import { Subject } from 'rxjs';
+import { CommonModule, DatePipe } from '@angular/common';
+import { formatDate } from '@angular/common';
 
-
-// --- Dummy Components ---
-// These are placeholders.  In your actual application, these should be
-// the real components, and they should be standalone if you are using Angular 14+
-@Component({
-  selector: 'app-modal',
-  template: `
-    <div *ngIf="isOpen" class="fixed inset-0 bg-black/50 flex items-center justify-center">
-      <div class="bg-white p-6 rounded-md w-full max-w-md">
-        <h2 class="text-lg font-semibold mb-4">{{ title }}</h2>
-        <ng-content></ng-content>
-        <button (click)="close.emit()" class="mt-4">Close Modal</button>
-      </div>
-    </div>
-  `,
-  standalone: true, // Add this
-  imports: [CommonModule],
-})
-export class ModalComponent {
-  @Input() isOpen = false;
-  @Input() title = '';
-  @Output() close = new EventEmitter<void>();
-}
+// Define a type for the datepicker value.  This makes things clearer.
+type DatePickerValue = Date | null | undefined;
 
 @Component({
-  selector: 'app-calendar',
-  template: `
-    <div>
-      <p>Selected Date: {{ selected | date }}</p>
-      <input type="date" (change)="onDateChange($event)" [value]="selected | date:'yyyy-MM-dd'"/>
-    </div>
-  `,
-  standalone: true, // Add this
-  imports: [CommonModule],
-  providers: [DatePipe]
-})
-export class CalendarComponent {
-  @Input() selected: Date | undefined;
-  @Output() select = new EventEmitter<Date | undefined>();
-
-  constructor(private datePipe: DatePipe) {}
-
-  onDateChange(event: any) {
-    const date = event.target.value ? new Date(event.target.value) : undefined;
-        this.select.emit(date);
-  }
-}
-// --- End Dummy Components ---
-
-@Component({
-  selector: 'app-goals-section',
-  templateUrl: './goals-section.component.html',
-  // styleUrls: ['./goals-section.component.css'], // Remove styleUrls
-  providers: [DatePipe],
-  standalone: true,
-  imports: [CommonModule, FormsModule, ModalComponent, CalendarComponent], // Import  the dummy components
+    selector: 'app-goals-section',
+    templateUrl: './goals-section.component.html',
+    styleUrls: ['./goals-section.component.scss'],
+    imports: [FormsModule, ModalComponent, CommonModule, DatePipe], // Removed CalendarComponent
 })
 export class GoalsSectionComponent implements OnInit, OnDestroy {
-  goals: Goal[] = [];
-  isModalOpen = false;
-  editingGoal: Goal | null = null;
-  newGoal: Omit<Goal, 'id' | 'completed'> = { name: '', targetDate: undefined, description: '' };
-  private destroy$ = new Subject<void>();
+handleCompleteGoal(arg0: string) {
+throw new Error('Method not implemented.');
+}
+onDateSelect($event: Event) {
+throw new Error('Method not implemented.');
+}
+    goals: Goal[] = [];
+    newGoal: Goal = { id: '', name: '', targetDate: undefined, description: '', completed: false };
+    isModalOpen = false;
+    editingGoal: Goal | null = null;
+    selectedDate: DatePickerValue = undefined; // Use the new type
+    private destroy$: Subject<void> = new Subject<void>();
+    private datePipe: DatePipe;
 
-  constructor(
-    private datePipe: DatePipe,
-    @Inject(ChangeDetectorRef) private cdr: ChangeDetectorRef
-  ) { }
+    // Use ViewChild to get a reference to the input element.
+    @ViewChild('dateInput') dateInput: ElementRef<HTMLInputElement> | undefined;
 
-  ngOnInit(): void {
-    this.loadGoals();
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
-  loadGoals(): void {
-    if (typeof window !== 'undefined') {
-      const savedGoals = localStorage.getItem('fitnessGoals');
-      this.goals = savedGoals ? JSON.parse(savedGoals) : [];
+    constructor(@Inject(LOCALE_ID) private locale: string) {
+        this.datePipe = new DatePipe(locale);
     }
-  }
 
-  saveGoals(): void {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('fitnessGoals', JSON.stringify(this.goals));
+    ngOnInit(): void {
+        this.loadGoals();
     }
-  }
 
-  openModal(goal?: Goal) {
-    if (goal) {
-      this.editingGoal = goal;
-      this.newGoal = {
-        name: goal.name,
-        targetDate: goal.targetDate,
-        description: goal.description,
-      };
-    } else {
-      this.editingGoal = null;
-      this.newGoal = { name: '', targetDate: undefined, description: '' };
+    ngOnDestroy(): void {
+        this.destroy$.next();
+        this.destroy$.complete();
     }
-    this.isModalOpen = true;
-  }
 
-  closeModal() {
-    this.isModalOpen = false;
-  }
-
-  handleSaveGoal() {
-    if (!this.newGoal.name.trim()) return;
-
-    if (this.editingGoal) {
-      // Update existing goal
-      this.goals = this.goals.map((g) => {
-        if (g.id === this.editingGoal?.id) {
-          return { ...this.editingGoal, ...this.newGoal };
+    openModal(goal?: Goal) {
+        this.isModalOpen = true;
+        if (goal) {
+            this.editingGoal = { ...goal };
+            this.newGoal = {
+                ...goal,
+                targetDate: goal.targetDate ? new Date(goal.targetDate) : undefined,
+            };
+            this.selectedDate = goal.targetDate ? new Date(goal.targetDate) : undefined;
+        } else {
+            this.editingGoal = null;
+            this.newGoal = { id: '', name: '', targetDate: undefined, description: '', completed: false };
+            this.selectedDate = undefined;
         }
-        return g;
-      });
-    } else {
-      // Add new goal
-      const goal: Goal = {
-        id: crypto.randomUUID(),
-        ...this.newGoal,
-        completed: false,
-      };
-      this.goals = [...this.goals, goal];
     }
-    this.saveGoals();
-    this.closeModal();
-    this.cdr.detectChanges();
-  }
 
-  handleDeleteGoal(id: string) {
-    this.goals = this.goals.filter((g) => g.id !== id);
-    this.saveGoals();
-    this.cdr.detectChanges();
-  }
+    closeModal() {
+        this.isModalOpen = false;
+        this.editingGoal = null;
+        this.newGoal = { id: '', name: '', targetDate: undefined, description: '', completed: false };
+        this.selectedDate = undefined;
+    }
 
-  handleCompleteGoal(id: string) {
-    this.goals = this.goals.map((goal) =>
-      goal.id === id ? { ...goal, completed: !goal.completed } : goal
-    );
-    this.saveGoals();
-    this.cdr.detectChanges();
-  }
+    handleSaveGoal() {
+        if (this.newGoal.name && this.newGoal.description) {
+            if (this.editingGoal) {
+                const index = this.goals.findIndex(g => g.id === this.editingGoal!.id);
+                if (index > -1) {
+                    this.goals[index] = { ...this.newGoal };
+                }
+            } else {
+                this.newGoal.id = crypto.randomUUID();
+                this.goals.push({ ...this.newGoal });
+            }
+            this.saveGoals();
+            this.closeModal();
+        } else {
+            alert('Please fill in all fields!');
+        }
+    }
 
-  onDateSelect(date: Date | undefined) {
-    this.newGoal.targetDate = date;
-  }
+    handleDeleteGoal(id: string): void {
+        this.goals = this.goals.filter(goal => goal.id !== id);
+        this.saveGoals();
+    }
 
-  trackByGoalId(index: number, goal: Goal): string {
-    return goal.id;
-  }
+    trackByGoalId(index: number, goal: Goal): string {
+        return goal.id;
+    }
 
-  formatDate(date: Date | undefined, format: string = 'yyyy-MM-dd'): string {
-    if (!date) return '';
-    return this.datePipe.transform(date, format) || '';
-  }
+    saveGoals() {
+        const savedGoals = this.goals.map(goal => ({
+            ...goal,
+            targetDate: goal.targetDate ? goal.targetDate.toISOString() : null,
+        }));
+        localStorage.setItem('goals', JSON.stringify(savedGoals));
+    }
+
+    loadGoals() {
+        const savedGoals = localStorage.getItem('goals');
+        if (savedGoals) {
+            const parsedGoals = JSON.parse(savedGoals);
+            this.goals = parsedGoals.map((goal: any) => ({
+                ...goal,
+                targetDate: goal.targetDate ? new Date(goal.targetDate) : undefined,
+            }));
+        } else {
+            this.goals = [];
+        }
+    }
+
+    formatDate(date: DatePickerValue): string {
+        return date ? this.datePipe.transform(date, 'MMM dd, yyyy') || 'Invalid Date' : 'N/A';
+    }
+
+    // New method to handle date input change
+    onDateChange(event: Event) {
+        const value = (event.target as HTMLInputElement).value;
+        if (value) {
+            const parsedDate = new Date(value);
+            if (!isNaN(parsedDate.getTime())) { // Check if it's a valid date
+                this.newGoal.targetDate = parsedDate;
+                this.selectedDate = parsedDate;
+            } else {
+                this.newGoal.targetDate = undefined;
+                this.selectedDate = undefined;
+                // Optionally, show an error message to the user
+                alert('Invalid date format. Please use a valid date.');
+            }
+        } else {
+            this.newGoal.targetDate = undefined;
+            this.selectedDate = undefined;
+        }
+    }
 }
 

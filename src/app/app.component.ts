@@ -9,6 +9,13 @@
      imports: [GoalsSectionComponent], // Import the GoalsSectionComponent
    })
    export class AppComponent {
+saveGoal() {
+throw new Error('Method not implemented.');
+}
+goalForm: any;
+addGoal() {
+throw new Error('Method not implemented.');
+}
      title = 'healthApp';
    }
    

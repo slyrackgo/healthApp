@@ -1,1 +1,116 @@
-/* You can add global styles to this file, and also import other style files */
+/* General styling and layout */
+zbody {
+  font-family: 'Lato', sans-serif; /* Ensure Lato is included, define in HTML */
+  margin: 0;
+  padding: 0;
+  background-color: #1a202c; /* Darker, more professional background */
+  color: #f7fafc; /* Off-white, slightly warmer text */
+}
+
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem; /* Slightly increased padding for spaciousness */
+  max-width: 64rem; /* Increased max-width for larger screens */
+  margin: 0 auto; /* Center the container */
+  box-sizing: border-box; /* Include padding in element's total width and height */
+}
+
+.text-center {
+  text-align: center;
+}
+
+/* Typography */
+.heading-1 {
+  font-size: 3rem;
+  line-height: 3.5rem;
+  font-weight: 600; /* Lighter bold, more modern */
+  margin-bottom: 2rem; /* Add margin below heading */
+}
+
+.paragraph {
+    color: #cbd5e0;
+    font-size: 1rem;
+    line-height: 1.75rem; /* Increased line height for better readability */
+    margin-bottom: 2rem;
+}
+
+/* Spacing */
+.section-spacing {
+  margin-top: 4rem;
+  margin-bottom: 4rem;
+}
+
+/* Navigation/Buttons */
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 2rem; /* Increased horizontal gap */
+  margin-bottom: 2rem;
+}
+
+.button {
+  padding: 1rem 2rem;
+  border-radius: 0.5rem;
+  font-size: 1.1rem;
+  line-height: 1.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  background-color: rgba(56, 189, 248, 0.2); /* Softer blue */
+  color: #38bdf8; /* Vibrant blue */
+  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.button:hover {
+  background-color: rgba(56, 189, 248, 0.4);
+  color: #ffffff;
+  transform: translateY(-0.125rem);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.button:active {
+  transform: translateY(0);
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.2);
+}
+
+.button.alternative { /* Added for the second button style */
+    background-color: transparent;
+    color: #cbd5e0;
+}
+
+.button.alternative:hover {
+    color: #fff;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Icon Styles */
+.icon {
+  display: inline-flex; /* Use inline-flex for better alignment */
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.75rem;
+  height: 1.25rem;
+  width: 1.25rem;
+}
+
+.list-checks-icon::before {
+  content: '✓'; /* Simple checkmark.  Use a proper icon font/SVG for real apps */
+  color: #48bb78;
+}
+
+.bar-chart-icon::before {
+  content: '📊'; /* Simple bar chart.  Replace with icon font/SVG */
+  color: #718096;
+}
+
+/* If you were using a font library, you might have rules like:
+.list-checks-icon::before {
+    font-family: 'FontAwesome';
+    content: '\f046'; // Example: Font Awesome check-circle-o
+}
+*/
